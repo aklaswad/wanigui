@@ -1,0 +1,27 @@
+{
+  "name": "wanigui",
+  "version": "0.0.1",
+  "description": "GUI collection for wani",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aklaswad/wanigui.git"
+  },
+  "keywords": [
+    "webaudio",
+    "gui"
+  ],
+  "author": "aklaswad",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aklaswad/wanigui/issues"
+  },
+  "homepage": "https://github.com/aklaswad/wanigui",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-gh-pages": "^0.5.0"
+  }
+}

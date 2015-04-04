@@ -2,9 +2,8 @@
 
 ### SYNOPSIS
 
-$moduleGUI = Wanigui(module, opts);
-$yourModuleWrapper.append( $moduleGui );
-$module.
+builder = Wanigui(module, opts);
+$yourModuleWrapperJQueryObject.append( builder.build() );
 
 ###
 
@@ -45,13 +44,12 @@ Wanigui::init = (module, opts) ->
 
 Wanigui::attachToModule = (module, profile, opts) ->
   looks = @module.looks or []
-  looks.push 'module-basic' #fallback ...is required? should ignore?
+  looks.push 'module-basic' #fallback ...ya, this was required
   for look in looks
     guiModule = Wanigui.modules[look]
     if guiModule
-      @moduleBuilder = guiModule
+      @moduleBuilder = new guiModule.create module, @opts
       return
-
 
 Wanigui::attachToInstrument = (module, profile, opts) ->
   looks = @module.instrumentLooks or []
@@ -59,7 +57,7 @@ Wanigui::attachToInstrument = (module, profile, opts) ->
   for look in looks
     guiModule = Wanigui.modules[look]
     if guiModule
-      @instrument = new guiModule.create(module, @opts)
+      @instrument = new guiModule.create module, @opts
       return
 
 Wanigui::attachToAudioParam = (module, name, param, opts) ->

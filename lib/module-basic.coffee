@@ -1,16 +1,22 @@
+ModuleBasic = (module) ->
+  @module = module
+  @
+
+ModuleBasic::build = () ->
+  $box = $('<div class="wanigui-module" />');
+  $('<h2 />')
+    .text @profile.name
+    .appendTo $box
+  $box.append @instrument.build() if @instrument
+  for audioParam in @audioParams
+    $box.append audioParam.build()
+  for param in @params
+    $box.append param.build()
+  $box
+
 Wanigui.registerModule
   name: 'module-basic'
-  build: () ->
-    $box = $('<div class="wanigui-module" />');
-    $('<h2 />')
-      .text @profile.name
-      .appendTo $box
-    $box.append @instrument.build() if @instrument
-    for audioParam in @audioParams
-      $box.append audioParam.build()
-    for param in @params
-      $box.append param.build()
-    $box
+  create: ModuleBasic
   stylesheet: '''
 .wani-module {
   border: 1px solid #888;

@@ -34,8 +34,8 @@ Wanigui::init = (module, opts) ->
   @params = []
   @module = module
   @instrument
-  profile = module.profile
-  @buildInstrumentInterface(module, opts) if profile.type is 'synth'
+  @profile = profile = module.profile
+  @attachToInstrument(module, profile, opts) if profile.type is 'synth'
   for name, param of profile.audioParams
     @attachToAudioParam module, name, param, @opts
   for name, param of profile.params
@@ -60,17 +60,20 @@ Wanigui::attachToParam = (module, name, param, opts) ->
       @params.push( new guiModule.create(module,name,param,opts) )
       return
 
-Wanigui::buildInstrumentInterface = () ->
+Wanigui::attachToInstrument = (module, profile, opts) ->
   looks = @module.looks or []
   looks.push 'keyboard' #fallback ...is required? should ignore?
   for look in looks
     guiModule = Wanigui.modules[look]
     if guiModule
-      @instrument = new guiModule.create(@opts)
+      @instrument = new guiModule.create(module, @opts)
       return
 
 Wanigui::build = () ->
-  $box = $('<div />');
+  $box = $('<div class="wanigui-module" />');
+  $('<h2 />')
+    .text @profile.name
+    .appendTo $box
   $box.append @instrument.build() if @instrument
   for audioParam in @audioParams
     $box.append audioParam.build()

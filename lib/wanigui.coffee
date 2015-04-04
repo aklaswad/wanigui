@@ -20,9 +20,9 @@ Wanigui.registerModule = (profile) ->
     rules = profile.stylesheet.split(/}/).reverse()
     for rule,i in rules
       rule = rule.replace /^[\s\n]+/g, ''
-      rule = rule.replace /^[\s\n]$/g, ''
+      rule = rule.replace /^[\s\n]+$/g, ''
       continue unless rule
-      rule += '}' unless i == rules.length - 1
+      rule += '}' unless rule.match /}$/
       sheet.insertRule rule,0
 
 Wanigui::Defaults = {}

@@ -35,12 +35,32 @@ Wanigui::init = (module, opts) ->
   @module = module
   @instrument
   @profile = profile = module.profile
-  @attachToInstrument(module, profile, opts) if profile.type is 'synth'
+  @attachToModule module, profile, opts
+  @attachToInstrument module, profile, opts if profile.type is 'synth'
   for name, param of profile.audioParams
     @attachToAudioParam module, name, param, @opts
   for name, param of profile.params
     @attachToParam module, name, param, @opts
   @
+
+Wanigui::attachToModule = (module, profile, opts) ->
+  looks = @module.looks or []
+  looks.push 'module-basic' #fallback ...is required? should ignore?
+  for look in looks
+    guiModule = Wanigui.modules[look]
+    if guiModule
+      @moduleBuilder = guiModule
+      return
+
+
+Wanigui::attachToInstrument = (module, profile, opts) ->
+  looks = @module.instrumentLooks or []
+  looks.push 'keyboard' #fallback ...is required? should ignore?
+  for look in looks
+    guiModule = Wanigui.modules[look]
+    if guiModule
+      @instrument = new guiModule.create(module, @opts)
+      return
 
 Wanigui::attachToAudioParam = (module, name, param, opts) ->
   looks = param.looks or []
@@ -60,25 +80,7 @@ Wanigui::attachToParam = (module, name, param, opts) ->
       @params.push( new guiModule.create(module,name,param,opts) )
       return
 
-Wanigui::attachToInstrument = (module, profile, opts) ->
-  looks = @module.looks or []
-  looks.push 'keyboard' #fallback ...is required? should ignore?
-  for look in looks
-    guiModule = Wanigui.modules[look]
-    if guiModule
-      @instrument = new guiModule.create(module, @opts)
-      return
-
 Wanigui::build = () ->
-  $box = $('<div class="wanigui-module" />');
-  $('<h2 />')
-    .text @profile.name
-    .appendTo $box
-  $box.append @instrument.build() if @instrument
-  for audioParam in @audioParams
-    $box.append audioParam.build()
-  for param in @params
-    $box.append param.build()
-  $box
+  @moduleBuilder.build.apply @
 
 window.Wanigui = Wanigui

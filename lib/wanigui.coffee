@@ -81,18 +81,4 @@ Wanigui::build = () ->
     $box.append param.build()
   $box
 
-WaniguiParam = (ctx, module, opts) ->
-  @ctx = ctx
-  @opts = $.extend {}, @Defaults, opts
-  @init module, opts
-
-WaniguiParam::attach = ->
-  module[param].onchange = (value) ->
-    $elem.change value
-  $elem.onchange = (value) ->
-    module[param].value = value
-
-WaniguiParam::build = ->
-  throw 'virtual method'
-
 window.Wanigui = Wanigui

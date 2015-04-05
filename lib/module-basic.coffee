@@ -12,7 +12,7 @@ ModuleBasic::build = (wanigui) ->
   $inner = $('<div class="wanigui-module" />');
   $section = $('<section class="wanigui-module-wrapper" />').append($inner)
 
-  $('<h1 />')
+  $title = $('<h1 />')
     .addClass('.wanigui-module-name')
     .text @profile.name
     .appendTo $inner
@@ -27,7 +27,7 @@ ModuleBasic::build = (wanigui) ->
           .appendTo $select
     $select.on 'change', ->
       wanigui.applyPreset $select.val()
-    $select.appendTo $inner
+    $select.appendTo $title
   if wanigui.instrument
     $inst = wanigui.instrument.build()
     $inst.addClass 'wanigui-inst'
@@ -73,7 +73,6 @@ Wanigui.registerModule
 
 .wanigui-module-name {
   display: block;
-  width: 100%;
   text-align: center;
 }
 
@@ -86,6 +85,18 @@ Wanigui.registerModule
   padding: 3px 3px 3px 20px;
   margin: 8px 2px;;
   font-size: 16px;
+}
+
+select.presets {
+  border: 1px solid #fff;
+  color: #def;
+  width: 120px;
+  background-color: #678;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 10px;
+  position: absolute;
+  right: 8px;
 }
 
 .wanigui-inst {

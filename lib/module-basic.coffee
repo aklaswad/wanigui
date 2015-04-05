@@ -3,6 +3,7 @@ ModuleBasic = (module,opts) ->
   @profile = module.profile
   @opts = opts
   @
+
 ModuleBasic:: = Object.create Wanigui::
 
 ModuleBasic::build = (wanigui) ->
@@ -20,7 +21,6 @@ ModuleBasic::build = (wanigui) ->
   if profile.presets
     $select = $ '<select class="presets"/>'
     for name,values of profile.presets
-      console.log name,values
       do (name) ->
         $option = $ '<option />'
           .text name
@@ -38,7 +38,6 @@ ModuleBasic::build = (wanigui) ->
   for name, param of wanigui.params
     $inner.append param.build()
   $section
-
 
 Wanigui.registerModule
   name: 'module-basic'

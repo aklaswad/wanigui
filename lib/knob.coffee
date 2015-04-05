@@ -103,7 +103,6 @@ Knob::build = () ->
   len = @values.length
   while i < len
     value = @values[i]
-    #console.log value, bs, @baseTheta
     x = bs.width / 2 + bs.radius * Math.cos(@baseTheta - 2 * i / (len - 1) * Math.PI * 300 / 360)
     y = bs.height / 2 - bs.radius * Math.sin(@baseTheta - 2 * i / (len - 1) * Math.PI * 300 / 360)
     ctx.strokeStyle = '#fff'
@@ -291,10 +290,6 @@ __style = '''
   text-align: center;
   height: 24px;
 }
-
-
-
-
 '''
 
 addGlobalEventHandler(document)

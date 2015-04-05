@@ -1,17 +1,10 @@
 'use strict'
 
-### SYNOPSIS
-
-builder = Wanigui(module, opts);
-$yourModuleWrapperJQueryObject.append( builder.build() );
-
-###
-
-
 Wanigui = (module, opts) ->
   @init module, opts
 
 Wanigui.modules = {}
+
 Wanigui.registerModule = (profile) ->
   Wanigui.modules[profile.name] = profile
   if profile.stylesheet?

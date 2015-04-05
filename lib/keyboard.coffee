@@ -84,7 +84,6 @@ Keyboard::buildKeyboard = ($elem,from) ->
 
 Keyboard::onmousedown = (noteNumber) ->
   @noteOn noteNumber
-  console.log('md',noteNumber);
   unless @playing?
     $(document).addClass 'wani-no-select'
     @setNoteOffListeners()
@@ -94,7 +93,6 @@ Keyboard::noteOn = (noteNumber) ->
   @$keyboard.find('.wani-kb-key-' + noteNumber).addClass('wani-kb-key-playing')
   @destination.noteOn(noteNumber);
 
-
 Keyboard::noteOff = (noteNumber) ->
   noteNumber ?= @playing
   @$keyboard.find('.wani-kb-key-' + noteNumber).removeClass('wani-kb-key-playing')
@@ -102,7 +100,6 @@ Keyboard::noteOff = (noteNumber) ->
 
 Keyboard::setNoteOffListeners = () ->
   kb = this
-  console.log(1)
   @mouseup = ->
     kb.noteOff(kb.playing)
     kb.playing = null
@@ -152,7 +149,6 @@ __style = '''
   border-right: 1px solid #abc;
   border-bottom: 2px solid #424033;
   background-color: #8f8073;
-/*  background-color: #fff; */
   border-radius: 0 0 2px 2px;
   z-index: 2;
 }
@@ -163,7 +159,6 @@ __style = '''
   top: 0px;
   border-right: 1px solid #abc;
   background-color: #f84;
-/*  background-color: #000; */
   border-radius: 0 0 2px 2px;
   z-index: 4;
 }
@@ -195,11 +190,10 @@ __style = '''
   box-shadow: 0 0 5px #def;
 }
 
-
 '''
 
-Wanigui.registerModule(
+Wanigui.registerModule
   name: 'keyboard'
   create: Keyboard
   stylesheet: __style
-)
+

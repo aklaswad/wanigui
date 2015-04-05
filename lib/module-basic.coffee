@@ -33,10 +33,26 @@ ModuleBasic::build = (wanigui) ->
     $inst.addClass 'wanigui-inst'
     $inner.append $inst
 
+  # Grouping
+  groups = {__other: []}
   for name, audioParam of wanigui.audioParams
-    $inner.append audioParam.build()
+    console.log name,audioParam
+    group = profile.audioParams[name].group || '__other'
+    groups[group] = [] unless groups[group]?
+    groups[group].push {name: name,param: audioParam}
   for name, param of wanigui.params
-    $inner.append param.build()
+    group = profile.params[name].group || 'ZZZZZ__other'
+    groups[group] = [] unless groups[group]?
+    groups[group].push {name: name,param: param}
+
+  for group, params of groups
+    group = 'other' if group == 'ZZZZZ__other'
+    $group = $ '<div class="wani-param-group" />'
+      .addClass 'group-' + group
+    $group.append $('<h2 />').text(group) unless group == 'other'
+    for param in params
+      $group.append param.param.build()
+    $group.appendTo $section
   $section
 
 Wanigui.registerModule
@@ -45,10 +61,8 @@ Wanigui.registerModule
   stylesheet: '''
 
 .wanigui-module-wrapper {
-  width: 260px;
-}
-
-.wanigui-module {
+  width: 290px;
+  background-color: #f84;
   border: 1px solid #888;
   background-color: #808a90;
   color: #fff;
@@ -76,6 +90,19 @@ Wanigui.registerModule
 
 .wanigui-inst {
   margin: 5px 0;
+}
+
+.wani-param-group {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+  border-bottom: 1px solid #678;
+}
+
+.wani-param-group h2 {
+  font-size: 10px;
+  text-align: center;
+  margin: 2px;
 }
 
 .wani-module .js-remove-module {

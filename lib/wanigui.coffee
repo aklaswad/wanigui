@@ -39,6 +39,7 @@ Wanigui::attachToModule = (module, profile, opts) ->
   looks = @module.looks or []
   looks.push 'module-basic' #fallback ...ya, this was required
   for look in looks
+    return if look == 'none'
     guiModule = Wanigui.modules[look]
     if guiModule
       @moduleBuilder = new guiModule.create module, @opts
@@ -48,6 +49,7 @@ Wanigui::attachToInstrument = (module, profile, opts) ->
   looks = @module.instrumentLooks or []
   looks.push 'keyboard' #fallback ...is required? should ignore?
   for look in looks
+    return if look == 'none'
     guiModule = Wanigui.modules[look]
     if guiModule
       @instrument = new guiModule.create module, @opts
@@ -57,6 +59,7 @@ Wanigui::attachToAudioParam = (module, name, param, opts) ->
   looks = param.looks or []
   looks.push 'knob' #fallback ...is required? should ignore?
   for look in looks
+    return if look == 'none'
     guiModule = Wanigui.modules[look]
     if guiModule
       @audioParams[name] = new guiModule.create module,name,param,opts

@@ -3,38 +3,63 @@ ModuleBasic = (module) ->
   @
 
 ModuleBasic::build = () ->
-  $box = $('<div class="wanigui-module" />');
-  $('<h2 />')
+  profile = @module.profile
+  $inner = $('<div class="wanigui-module" />');
+  $section = $('<section class="wanigui-module-wrapper" />').append($inner)
+
+  $('<h1 />')
+    .addClass('.wanigui-module-name')
     .text @profile.name
-    .appendTo $box
-  $box.append @instrument.build() if @instrument
+    .appendTo $inner
+  if profile.type == 'synth'
+    $inner.addClass('wanigui-synth')
+  if @instrument
+    $inst = @instrument.build()
+    $inst.addClass 'wanigui-inst'
+    $inner.append $inst
   for audioParam in @audioParams
-    $box.append audioParam.build()
+    $inner.append audioParam.build()
   for param in @params
-    $box.append param.build()
-  $box
+    $inner.append param.build()
+  $section
 
 Wanigui.registerModule
   name: 'module-basic'
   create: ModuleBasic
   stylesheet: '''
-.wani-module {
+
+.wanigui-module-wrapper {
+  width: 260px;
+}
+
+.wanigui-module {
   border: 1px solid #888;
   background-color: #808a90;
   color: #fff;
   position: relative;
-  width: 256px;
+  width: 100%;
   margin: 2px;
 }
 
-.wani-module.synth {
+.wanigui-module-name {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.wanigui-module.wanigui-synth {
   background-color: #80908a;
 }
 
-.wani-module h1 {
+.wanigui-module h1 {
   color: #fff;
   padding: 3px 3px 3px 20px;
-  margin: 2px;
+  margin: 8px 2px;;
+  font-size: 16px;
+}
+
+.wanigui-inst {
+  margin: 5px 0;
 }
 
 .wani-module .js-remove-module {

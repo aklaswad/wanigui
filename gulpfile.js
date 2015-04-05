@@ -6,7 +6,7 @@ var gutil = require('gulp-util');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 
-gulp.task('deploy', function () {
+gulp.task('ghPages', function () {
   return gulp.src('./site/**/*')
     .pipe(ghPages());
 });
@@ -16,6 +16,13 @@ gulp.task('coffee', function() {
     .pipe(coffee())
       .on('error',gutil.log)
     .pipe(gulp.dest('./js/'));
+});
+
+gulp.task('coffee-deploy', function() {
+  gulp.src('./lib/**/*.coffee')
+    .pipe(coffee())
+      .on('error',gutil.log)
+    .pipe(gulp.dest('./site/'));
 });
 
 gulp.task('concat', function () {
@@ -36,5 +43,11 @@ gulp.task('build', function () {
     gulp.run('concat', function () {
       gulp.run('uglify', function () {})
     })
+  })
+});
+
+gulp.task('deploy', function () {
+  gulp.run('coffee-deploy', function () {
+    gulp.run('ghPages', function () {})
   })
 });

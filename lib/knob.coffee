@@ -45,9 +45,9 @@ Knob::template = (t)->
   """
 <div class="wani-knob-box wani-knob">
   <div class="wani-knob-inner">
-    <h2 class="wani-knob-title">
+    <h3 class="wani-knob-title">
       <span>#{t.title}</span>
-    </h2>
+    </h3>
     <canvas class="wani-knob-backsheet" width="160" height="160"></canvas>
     <div class="wani-knob-activevalue">#{t.value}</div>
     <div class="wani-knob-value">#{t.value}</div>

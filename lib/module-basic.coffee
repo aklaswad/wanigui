@@ -34,10 +34,10 @@ ModuleBasic::build = (wanigui) ->
     $inner.append $inst
 
   # Grouping
-  groups = {__other: []}
+  groups = {ZZZZZ__other: []}
   for name, audioParam of wanigui.audioParams
     console.log name,audioParam
-    group = profile.audioParams[name].group || '__other'
+    group = profile.audioParams[name].group || 'ZZZZZ__other'
     groups[group] = [] unless groups[group]?
     groups[group].push {name: name,param: audioParam}
   for name, param of wanigui.params
@@ -61,7 +61,7 @@ Wanigui.registerModule
   stylesheet: '''
 
 .wanigui-module-wrapper {
-  width: 290px;
+  width: 590px;
   background-color: #f84;
   border: 1px solid #888;
   background-color: #808a90;
@@ -94,15 +94,17 @@ Wanigui.registerModule
 
 .wani-param-group {
   position: relative;
-  width: 100%;
   display: inline-block;
-  border-bottom: 1px solid #678;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 .wani-param-group h2 {
   font-size: 10px;
   text-align: center;
   margin: 2px;
+  color: #abc;
+  border-bottom: 1px solid #abc;
 }
 
 .wani-module .js-remove-module {

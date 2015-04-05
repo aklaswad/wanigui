@@ -1,8 +1,12 @@
-ModuleBasic = (module) ->
+ModuleBasic = (module,opts) ->
   @module = module
+  @profile = module.profile
+  @opts = opts
   @
+ModuleBasic:: = Object.create Wanigui::
 
-ModuleBasic::build = () ->
+ModuleBasic::build = (wanigui) ->
+  that = @
   profile = @module.profile
   $inner = $('<div class="wanigui-module" />');
   $section = $('<section class="wanigui-module-wrapper" />').append($inner)
@@ -13,15 +17,28 @@ ModuleBasic::build = () ->
     .appendTo $inner
   if profile.type == 'synth'
     $inner.addClass('wanigui-synth')
-  if @instrument
-    $inst = @instrument.build()
+  if profile.presets
+    $select = $ '<select class="presets"/>'
+    for name,values of profile.presets
+      console.log name,values
+      do (name) ->
+        $option = $ '<option />'
+          .text name
+          .appendTo $select
+    $select.on 'change', ->
+      wanigui.applyPreset $select.val()
+    $select.appendTo $inner
+  if wanigui.instrument
+    $inst = wanigui.instrument.build()
     $inst.addClass 'wanigui-inst'
     $inner.append $inst
-  for audioParam in @audioParams
+
+  for name, audioParam of wanigui.audioParams
     $inner.append audioParam.build()
-  for param in @params
+  for name, param of wanigui.params
     $inner.append param.build()
   $section
+
 
 Wanigui.registerModule
   name: 'module-basic'

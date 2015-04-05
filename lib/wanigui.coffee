@@ -29,8 +29,8 @@ Wanigui::Defaults = {}
 
 Wanigui::init = (module, opts) ->
   @opts = $.extend {}, @Defaults, opts
-  @audioParams = []
-  @params = []
+  @audioParams = {}
+  @params = {}
   @module = module
   @instrument
   @profile = profile = module.profile
@@ -66,7 +66,7 @@ Wanigui::attachToAudioParam = (module, name, param, opts) ->
   for look in looks
     guiModule = Wanigui.modules[look]
     if guiModule
-      @audioParams.push( new guiModule.create(module,name,param,opts) )
+      @audioParams[name] = new guiModule.create module,name,param,opts
       return
 
 Wanigui::attachToParam = (module, name, param, opts) ->
@@ -75,10 +75,17 @@ Wanigui::attachToParam = (module, name, param, opts) ->
   for look in looks
     guiModule = Wanigui.modules[look]
     if guiModule
-      @params.push( new guiModule.create(module,name,param,opts) )
+      @params[name] = new guiModule.create module,name,param,opts
       return
 
+Wanigui::applyPreset = (name) ->
+  preset = @profile.presets[name]
+  for name,value of preset.audioParams
+    @audioParams[name].value = value
+  for name,value of preset.params
+    @params[name].value = value
+
 Wanigui::build = () ->
-  @moduleBuilder.build.apply @
+  @moduleBuilder.build @
 
 window.Wanigui = Wanigui

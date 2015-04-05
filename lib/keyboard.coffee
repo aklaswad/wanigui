@@ -64,7 +64,7 @@ Keyboard::buildKeyboard = ($elem,from) ->
           height: height * 0.6
           left: pos * keyWidth - keyWidth * 0.35)
         .on 'mousedown', ()->
-          kb.noteOn noteNumber
+          kb.onmousedown noteNumber
           return false
         .appendTo $elem
 
@@ -78,48 +78,49 @@ Keyboard::buildKeyboard = ($elem,from) ->
           height: height - 2
           left: pos * keyWidth)
         .on 'mousedown', ()->
-          kb.noteOn noteNumber
+          kb.onmousedown noteNumber
           return false
         .appendTo $elem
 
-
-Keyboard::noteOn = (noteNumber) ->
-  @$keyboard.find('.wani-kb-key-' + noteNumber).addClass('wani-kb-key-playing')
+Keyboard::onmousedown = (noteNumber) ->
+  @noteOn noteNumber
+  console.log('md',noteNumber);
   unless @playing?
     $(document).addClass 'wani-no-select'
     @setNoteOffListeners()
   @playing = noteNumber
+
+Keyboard::noteOn = (noteNumber) ->
+  @$keyboard.find('.wani-kb-key-' + noteNumber).addClass('wani-kb-key-playing')
   @destination.noteOn(noteNumber);
 
 
-Keyboard::noteOff = (noteNumber,continuePlaying) ->
+Keyboard::noteOff = (noteNumber) ->
   noteNumber ?= @playing
   @$keyboard.find('.wani-kb-key-' + noteNumber).removeClass('wani-kb-key-playing')
   @destination.noteOff(noteNumber)
-  return if continuePlaying
-  @playing = null
-  $(document).removeClass 'wani-no-select'
-  @clearNoteOffListeners()
-
 
 Keyboard::setNoteOffListeners = () ->
   kb = this
   console.log(1)
-  $(document).on 'mouseup', ->
-    console.log(2)
-    kb.noteOff()
+  @mouseup = ->
+    kb.noteOff(kb.playing)
+    kb.playing = null
+    $(document).removeClass 'wani-no-select'
+    kb.clearNoteOffListeners()
     false
+  $(document).on 'mouseup', @mouseup
   @$keyboard.on 'mouseleave', ->
-    kb.noteOff(kb.playing, true)
+    kb.noteOff(kb.playing)
     false
   @$keyboard.find('.wani-kb-key').on 'mouseenter', ->
-    kb.noteOff(kb.playing,true)
+    kb.noteOff(kb.playing)
     $(this).trigger 'mousedown'
     false
   return
 
 Keyboard::clearNoteOffListeners = () ->
-  $(document).off 'mouseup'
+  $(document).off 'mouseup', @mouseup
   @$keyboard.off 'mouseleave'
   @$keyboard.find('.wani-kb-key').off 'mouseenter'
 

@@ -83,15 +83,15 @@ Keyboard::buildKeyboard = ($elem,from) ->
         .appendTo $elem
 
 Keyboard::onmousedown = (noteNumber) ->
-  @noteOn noteNumber
+  @noteOn noteNumber, 0.8
   unless @playing?
     $(document).addClass 'wani-no-select'
     @setNoteOffListeners()
   @playing = noteNumber
 
-Keyboard::noteOn = (noteNumber) ->
+Keyboard::noteOn = (noteNumber,velocity) ->
   @$keyboard.find('.wani-kb-key-' + noteNumber).addClass('wani-kb-key-playing')
-  @destination.noteOn(noteNumber);
+  @destination.noteOn(noteNumber,velocity);
 
 Keyboard::noteOff = (noteNumber) ->
   noteNumber ?= @playing
@@ -148,7 +148,7 @@ __style = '''
   top: 0px;
   border-right: 1px solid #abc;
   border-bottom: 2px solid #424033;
-  background-color: #8f8073;
+  background-color: #ddd;
   border-radius: 0 0 2px 2px;
   z-index: 2;
 }
@@ -158,17 +158,17 @@ __style = '''
   position: absolute;
   top: 0px;
   border-right: 1px solid #abc;
-  background-color: #f84;
+  background-color: #444;
   border-radius: 0 0 2px 2px;
   z-index: 4;
 }
 
 .wani-kb-bk:hover {
-  background-color: #fca;
+  background-color: #777;
 }
 
 .wani-kb-wk:hover {
-  background-color: #654;
+  background-color: #aaa;
 }
 
 .wani-kb-key-playing {

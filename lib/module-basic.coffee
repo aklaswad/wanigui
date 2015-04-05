@@ -11,10 +11,16 @@ ModuleBasic::build = (wanigui) ->
   profile = @module.profile
   $inner = $('<div class="wanigui-module" />');
   $section = $('<section class="wanigui-module-wrapper" />').append($inner)
-
+  $toggle = $('<span />')
+    .text '-'
+    .addClass 'wanigui-toggle-params'
+    .on 'click', ()->
+      $parameters.toggle()
+      $(this).text( if $(this).text() == '+' then '-' else '+' )
   $title = $('<h1 />')
-    .addClass('.wanigui-module-name')
-    .text @profile.name
+    .addClass('wanigui-module-title')
+    .append $toggle
+    .append $('<span />').addClass('wanigui-module-name').text(@profile.name)
     .appendTo $inner
   if profile.type == 'synth'
     $inner.addClass('wanigui-synth')
@@ -34,6 +40,7 @@ ModuleBasic::build = (wanigui) ->
     $inner.append $inst
 
   # Grouping
+  $parameters = $('<div />').addClass('wanigui-parameters')
   groups = {ZZZZZ__other: []}
   for name, audioParam of wanigui.audioParams
     console.log name,audioParam
@@ -52,8 +59,8 @@ ModuleBasic::build = (wanigui) ->
     $group.append $('<h2 />').text(group) unless group == 'other'
     for param in params
       $group.append param.param.build()
-    $group.appendTo $section
-  $section
+    $group.appendTo $parameters
+  $section.append $parameters
 
 Wanigui.registerModule
   name: 'module-basic'
@@ -69,15 +76,16 @@ Wanigui.registerModule
   position: relative;
   width: 100%;
   margin: 2px;
-}
-
-.wanigui-module-name {
-  display: block;
   text-align: center;
 }
 
-.wanigui-module.wanigui-synth {
-  background-color: #80908a;
+.wanigui-module-title {
+  height: 30px;
+}
+
+.wanigui-module-name {
+  position: absolute;
+  left: 24px;
 }
 
 .wanigui-module h1 {
@@ -85,6 +93,7 @@ Wanigui.registerModule
   padding: 3px 3px 3px 20px;
   margin: 8px 2px;;
   font-size: 16px;
+  text-align: left;
 }
 
 select.presets {
@@ -99,14 +108,26 @@ select.presets {
   right: 8px;
 }
 
+.wanigui-toggle-params {
+  margin: 0 6px;
+  cursor: pointer;
+  position: absolute;
+  left: 3px;
+}
+
 .wanigui-inst {
+  display: inline-block;
   margin: 5px 0;
+}
+
+.wanigui-parameters {
+  text-align: left;
+  padding: 8px;
 }
 
 .wani-param-group {
   position: relative;
   display: inline-block;
-  margin-left: 10px;
   margin-bottom: 10px;
 }
 

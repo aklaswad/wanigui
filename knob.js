@@ -64,7 +64,7 @@
   };
 
   Knob.prototype.template = function(t) {
-    return "<div class=\"wani-knob-box wani-knob\">\n  <div class=\"wani-knob-inner\">\n    <h2 class=\"wani-knob-title\">\n      <span>" + t.title + "</span>\n    </h2>\n    <canvas class=\"wani-knob-backsheet\" width=\"160\" height=\"160\"></canvas>\n    <div class=\"wani-knob-activevalue\">" + t.value + "</div>\n    <div class=\"wani-knob-value\">" + t.value + "</div>\n    <div class=\"wani-knob-knob\">\n      <div class=\"wani-knob-point\"></div>\n    </div>\n  </div>\n</div>";
+    return "<div class=\"wani-knob-box wani-knob\">\n  <div class=\"wani-knob-inner\">\n    <h3 class=\"wani-knob-title\">\n      <span>" + t.title + "</span>\n    </h3>\n    <canvas class=\"wani-knob-backsheet\" width=\"160\" height=\"160\"></canvas>\n    <div class=\"wani-knob-activevalue\">" + t.value + "</div>\n    <div class=\"wani-knob-value\">" + t.value + "</div>\n    <div class=\"wani-knob-knob\">\n      <div class=\"wani-knob-point\"></div>\n    </div>\n  </div>\n</div>";
   };
 
   Knob.prototype.build = function() {

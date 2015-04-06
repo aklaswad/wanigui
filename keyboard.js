@@ -96,7 +96,7 @@
   };
 
   Keyboard.prototype.onmousedown = function(noteNumber) {
-    this.noteOn(noteNumber);
+    this.noteOn(noteNumber, 0.8);
     if (this.playing == null) {
       $(document).addClass('wani-no-select');
       this.setNoteOffListeners();
@@ -104,9 +104,9 @@
     return this.playing = noteNumber;
   };
 
-  Keyboard.prototype.noteOn = function(noteNumber) {
+  Keyboard.prototype.noteOn = function(noteNumber, velocity) {
     this.$keyboard.find('.wani-kb-key-' + noteNumber).addClass('wani-kb-key-playing');
-    return this.destination.noteOn(noteNumber);
+    return this.destination.noteOn(noteNumber, velocity);
   };
 
   Keyboard.prototype.noteOff = function(noteNumber) {
@@ -145,7 +145,7 @@
     return this.$keyboard.find('.wani-kb-key').off('mouseenter');
   };
 
-  __style = '.wani-no-select {\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  user-select: none;\n}\n\n.wani-grabbing {\n  cursor: move !important;\n}\n\n.wani-kb {\n  height: 70px;\n  width: 256px;\n  position: relative;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  user-select: none;\n  cursor: pointer;\n  background-color: #abc;\n}\n\n.wani-kb-wk {\n  position: absolute;\n  top: 0px;\n  border-right: 1px solid #abc;\n  border-bottom: 2px solid #424033;\n  background-color: #8f8073;\n  border-radius: 0 0 2px 2px;\n  z-index: 2;\n}\n\n.wani-kb-bk {\n  height: 60%;\n  position: absolute;\n  top: 0px;\n  border-right: 1px solid #abc;\n  background-color: #f84;\n  border-radius: 0 0 2px 2px;\n  z-index: 4;\n}\n\n.wani-kb-bk:hover {\n  background-color: #fca;\n}\n\n.wani-kb-wk:hover {\n  background-color: #654;\n}\n\n.wani-kb-key-playing {\n  background-color: #abc !important;\n}\n\n.wani-kb-key-playing.wani-kb-wk {\n  z-index: 3;\n  border-left: 1px solid #fff;\n  border-right: 1px solid #fff;\n  border-bottom: 1px solid #fff;\n  box-shadow: 0 0 5px #def;\n}\n\n.wani-kb-key-playing.wani-kb-bk {\n  border-left: 1px solid #fff;\n  border-right: 1px solid #fff;\n  border-bottom: 1px solid #fff;\n  box-shadow: 0 0 5px #def;\n}\n';
+  __style = '.wani-no-select {\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  user-select: none;\n}\n\n.wani-grabbing {\n  cursor: move !important;\n}\n\n.wani-kb {\n  height: 70px;\n  width: 256px;\n  position: relative;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  user-select: none;\n  cursor: pointer;\n  background-color: #abc;\n}\n\n.wani-kb-wk {\n  position: absolute;\n  top: 0px;\n  border-right: 1px solid #abc;\n  border-bottom: 2px solid #424033;\n  background-color: #ddd;\n  border-radius: 0 0 2px 2px;\n  z-index: 2;\n}\n\n.wani-kb-bk {\n  height: 60%;\n  position: absolute;\n  top: 0px;\n  border-right: 1px solid #abc;\n  background-color: #444;\n  border-radius: 0 0 2px 2px;\n  z-index: 4;\n}\n\n.wani-kb-bk:hover {\n  background-color: #777;\n}\n\n.wani-kb-wk:hover {\n  background-color: #aaa;\n}\n\n.wani-kb-key-playing {\n  background-color: #abc !important;\n}\n\n.wani-kb-key-playing.wani-kb-wk {\n  z-index: 3;\n  border-left: 1px solid #fff;\n  border-right: 1px solid #fff;\n  border-bottom: 1px solid #fff;\n  box-shadow: 0 0 5px #def;\n}\n\n.wani-kb-key-playing.wani-kb-bk {\n  border-left: 1px solid #fff;\n  border-right: 1px solid #fff;\n  border-bottom: 1px solid #fff;\n  box-shadow: 0 0 5px #def;\n}\n';
 
   Wanigui.registerModule({
     name: 'keyboard',

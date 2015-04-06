@@ -1,0 +1,393 @@
+<script>window.Alligata = {};</script>
+<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="../../wani/lib/Wani.js"></script>
+<script src="../js/wanigui.js"></script>
+<script src="../js/wave-renderer.js"></script>
+<script>
+$( function () {
+});
+</script>
+<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+
+<style>
+
+footer.credit {
+  width: 100%;
+  margin: 30px 0 0 0;
+  padding: 10px;
+  background-color: #888980;
+  color: #dadacf;
+  border-radius: 5px 5px 0 0;
+  border-top: 1px solid #def;
+  border-right: 1px solid #def;
+}
+
+footer p {
+  text-align: right;
+}
+
+footer a {
+  color: #f84;
+  font-style: bold;
+}
+
+footer a:hover {
+  color: #fff;
+  font-style: bold;
+  text-decoration: underline;
+}
+
+h1.page-title {
+  margin-top: 93px;
+  padding-bottom: 77px;
+  color: #789;
+  border-bottom: 1px solid #ddd;
+}
+
+h1.page-title small {
+  font-size: 0.5em;
+  color: #aaa;
+  margin-left: 30px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+</style>
+
+<body>
+  <section class="container doc">
+    <div class="row">
+      <h1 class="page-title">wanigui<small>GUI collection for WebAudio API and <a href="http://aklaswad.github.com/wani">wani</a></small></h1>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <p>alligata is a small GUI collection for WebAudio API / <a href="http://aklaswad.github.io/wani/">wani</a> users.</p>
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <h3><a href="dsp-circuit-compiler.html">Wave Form Monitor</a></h3>
+        Renders wave form to HTML5 canvas.
+<pre>
+  var renderer = Wanigui.createWaveFormRenderer(ctx, 'my-canvas-id', {
+    lineColor: '#bad',
+  });
+  osc.connect(renderer);
+</pre>
+Node that this module is not rich, so you should set power of 2 for canvas width to get better result ;)
+<canvas id="my-canvas-id" width="256" height="120"></canvas>
+
+<script>
+$(function(){
+  var ctx = Wani.getAudioContext();
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  var gainLfo = ctx.createOscillator();
+  var lfo = ctx.createOscillator();
+  var lfoGain = ctx.createGain();
+  var renderer = Wanigui.createWaveFormRenderer(ctx,'my-canvas-id',{});
+
+  osc.frequency.value = 1000.0;
+  lfoGain.gain.value = 1000;
+  gain.gain.value = 0;
+  lfo.type = 'triangle';
+  lfo.frequency.value = 0.1;
+
+
+  gainLfo.frequency = 0.0;
+  var glg = ctx.createGain();
+  glg.gain.value = 0.0;
+  gainLfo.connect(glg);
+  gainLfo.connect(glg.gain);
+  lfo.connect(lfoGain);
+  lfoGain.connect(osc.frequency);
+  osc.connect(gain);
+  osc.start();
+  lfo.start();
+  gainLfo.start();
+  var filter = ctx.createBiquadFilter();
+  filter.frequency.value = 2000;
+  filter.Q.value = 2;
+  glg.connect(filter);
+  var master = ctx.createGain();
+
+
+  filter.connect(ctx.destination);
+
+  var kick = ctx.createOscillator();
+  var kickGain = ctx.createGain();
+  kick.connect(kickGain);
+  kick.start();
+
+  var snare = ctx.createOscillator();
+  var snareGain = ctx.createGain();
+  snare.type = 'sawtooth';
+  snare.connect(snareGain);
+  snare.start();
+
+
+//  filter.connect(delay);
+  var oscx = ctx.createOscillator();
+  oscx.type = 'square';
+  var gainx = ctx.createGain();
+  gainx.gain.value = 0.1;
+  oscx.connect(gainx);
+//  oscx.start();
+  gainx.connect(filter);
+
+  var oscx2 = ctx.createOscillator();
+  oscx2.type = 'square';
+  var gainx2 = ctx.createGain();
+  oscx2.connect(gainx2);
+//  oscx2.start();
+//  gainx2.connect(filter);
+
+
+  var synthOut = ctx.createGain();
+  var gaingain =ctx.createGain();
+  gaingain.gain.value = 0.6;
+  gain.connect(gaingain);
+  var delay = ctx.createDelay();
+  var feedback = ctx.createGain();
+  feedback.gain.value = 0.17;
+  delay.delayTime.value = 0.4;
+  filter.connect(delay);
+
+//  gainx.connect(synthOut);
+
+//  gainx2.connect(synthOut);
+
+  synthOut.connect(gain);
+  synthOut.connect(delay)
+  synthOut.gain.value = 0.0;
+  synthOut.connect(filter);;
+
+  delay.connect(feedback);
+  feedback.connect(filter);
+//  feedback.connect(filter);
+gaingain.connect(filter);
+  filter.connect(renderer);
+  kickGain.connect(filter);
+  snareGain.connect(filter);
+  var baseSec = 0;
+  var div = 1;
+  var challenge = Math.random(),
+     challenge2= Math.random(),
+     challenge3=Math.random();
+  var v = 0;
+  var oscBase = 40;
+  var bt;
+  var btk = 1.3;
+  var fun = function () {
+//console.log('base',oscBase);
+    if ( challenge < Math.random() ) {
+//      oscBase = oscBase *
+//        (1 + parseInt(Math.random()) * 4) * 2 /
+//        (1 + parseInt(Math.random() * 4))
+      ;
+      var key = Wani.midi2freq( -8 + parseInt( Math.random() * 18 ) ,1,0);
+      if ( key ) oscBase = oscBase * key;
+
+    }
+    if ( Math.random() < 0.2 ) {
+      btk = 1 + Math.random() * 3;
+//      console.log('BTD ',btk);
+    }
+    if ( oscBase < 20 ) oscBase = oscBase * 2;
+    if ( 500 < oscBase ) oscBase = oscBase / 4;
+
+    challenge = Math.random();
+    if ( challenge < Math.random() ) {
+      challenge2 = Math.random();
+    }
+    if ( challenge2 < Math.random() ) {
+      challenge3 = Math.random();
+    }
+    lfoGain.gain.value = Math.random() * 1000;
+//    console.log(baseSec);
+    div = parseInt( Math.random() * Math.random() * 4 );
+    v = Math.random();
+
+
+
+
+
+
+  };
+  fun();
+
+
+
+  var timer;
+  var total = 0;var count = 0;
+  fun();fun();fun();
+  var isBT = false;
+  var countMax;
+  baseSec = 58;
+      countMax = 16 * 4;
+      count = 0;
+  var tempoMultiplier = 2;
+  var factor = Math.pow( Math.E, Math.log(tempoMultiplier)/countMax );
+//console.log('factor', factor);
+  var fun3 = function () {
+
+    if ( countMax == count ) {
+//      console.log(baseSec);
+      baseSec = baseSec / tempoMultiplier;
+      count = 0;
+    }
+
+
+
+    baseSec = baseSec * factor;
+    //delay.delayTime.value = baseSec;
+    if ( !isBT && Math.random() < Math.pow(count/countMax,btk) ) {
+      isBT = true;
+    }
+    if ( isBT && Math.pow(count/countMax,btk) < Math.random() ) {
+      isBT = false;
+    }
+
+/*
+    if ( Math.random() < 0.01 || count !== 10 && ( 0 !== count % 6 && 0 !== count % 4 && !isBT )) {
+
+      count++;
+      total++;
+      setTimeout(fun3,baseSec);
+      return;
+    }
+*/
+    if ( !count ) {
+//      console.log('basesec: ', baseSec);
+    }
+    if ( 0 === count ) { fun() }
+
+
+    if ( (count < 40 && (count % 2 === 0)) || (30 < count && count < 48 && count % 2 === 0) ||  (48 < count  && (count % 10) === 0) || (count % 24 === 0)) {
+    oscx.frequency.cancelScheduledValues(ctx.currentTime);
+    var fb1 = ( parseInt( Math.sin(Math.PI*(count/countMax)*2) * parseInt(6*Math.random())))   /
+            ( parseInt( Math.sin(Math.PI * (count / countMax) * 2 * Math.random() )) * (Math.random() * 2) + 1 );
+//console.log(fb1);
+    oscx.frequency.setValueAtTime(
+      fb1*oscBase*2, ctx.currentTime
+    );
+      gainx.gain.cancelScheduledValues(ctx.currentTime);
+      gainx.gain.setValueAtTime(0.99,ctx.currentTime+0.09);
+      gainx.gain.linearRampToValueAtTime(0.2,ctx.currentTime + 0.2);
+      gainx.gain.linearRampToValueAtTime(0.0,ctx.currentTime + 8);
+    }
+
+    if ( (count < 40 && (count % 2 === 0)) || (26 < count && count < 60 && count % 2 === 0) ||  (48 < count  && (count % 2) === 0) || (count % 16 === 0)) {
+      oscx2.frequency.cancelScheduledValues(ctx.currentTime);
+
+   var fb = ( parseInt( Math.cos(Math.PI*(count/countMax)*2) *12*Math.random()) + 1 ) /
+            ( parseInt( Math.sin(Math.PI * (count / countMax) * 2 * Math.random() )) + 1) ;
+
+
+      oscx2.frequency.setValueAtTime(oscBase*fb*3, ctx.currentTime+ 0.001);
+
+      gainx2.gain.cancelScheduledValues(ctx.currentTime);
+      gainx2.gain.setValueAtTime(0.0,ctx.currentTime + 0.005);
+      gainx2.gain.setValueAtTime(0.99,ctx.currentTime + 0.01);
+      gainx2.gain.linearRampToValueAtTime(0.8,ctx.currentTime + 0.03);
+      gainx2.gain.linearRampToValueAtTime(0.0,ctx.currentTime + 2.2);
+   }
+
+
+//  var kickseq =  {0:1,     32:1,      48:1,52:1,      64:1,     80:1,     88:1,90:1};
+//  var snareseq = {    16:1,     40: 1,          56:1,      72:1,     84:1,         92:1,95:1};
+
+  var kickseq =  {0:1,4:1,      16:1,20:1,    32:1,         48:1,  56:1    }
+  var snareseq = {    8:1,     24:1,       44: 1,       52:1,  60: 1 };
+
+    if ( kickseq[count]) {
+      kick.frequency.cancelScheduledValues(ctx.currentTime);
+      kickGain.gain.cancelScheduledValues(ctx.currentTime);
+      kick.frequency.setValueAtTime(80,ctx.currentTime);
+      kickGain.gain.setValueAtTime(1.0,ctx.currentTime);
+      kick.frequency.linearRampToValueAtTime(20,ctx.currentTime + 0.1);
+      kickGain.gain.linearRampToValueAtTime(0,ctx.currentTime + 0.2);
+    }
+
+    if (snareseq[count]) {
+      kick.frequency.cancelScheduledValues(ctx.currentTime);
+      kickGain.gain.cancelScheduledValues(ctx.currentTime);
+      kick.frequency.setValueAtTime(120,ctx.currentTime);
+      kickGain.gain.setValueAtTime(0.4,ctx.currentTime);
+      kick.frequency.linearRampToValueAtTime(20,ctx.currentTime + 0.1);
+      kickGain.gain.linearRampToValueAtTime(0,ctx.currentTime + 0.2);
+
+      snare.frequency.cancelScheduledValues(ctx.currentTime);
+      snareGain.gain.cancelScheduledValues(ctx.currentTime);
+      snare.frequency.setValueAtTime(1000,ctx.currentTime);
+      snareGain.gain.setValueAtTime(1.0,ctx.currentTime);
+      snare.frequency.linearRampToValueAtTime(20,ctx.currentTime + 0.1);
+      snareGain.gain.linearRampToValueAtTime(0,ctx.currentTime + 0.1);
+    }
+
+    if ( count % 2 == 1 || (count % 6 !== 0 &&  Math.random() < Math.sin(Math.PI * ( count / countMax)))
+      || (count % 4 !== 0 &&  Math.random() < Math.sin(Math.PI * ( count / countMax)))) {
+      count++;
+      total++;
+
+      setTimeout(fun3,baseSec);
+      return;
+    }
+
+
+    if ( challenge3 < Math.random() * Math.random() ) {
+      lfo.frequency.exponentialRampToValueAtTime(Math.random() * 5,ctx.currentTime + Math.random());
+    }
+    if ( challenge3 < Math.random() * Math.random() ) {
+      lfoGain.gain.value = 0;
+    }
+    else {
+      lfoGain.gain.value = 980;
+    }
+    if ( challenge3 < Math.random() || count === 0 ) {
+      glg.connect(gain.gain);
+      gain.gain.value = 0.0;
+      gainLfo.frequency = parseInt(1 + Math.random() * Math.random() ) / (baseSec * (Math.pow(2,Math.random() * 10)));
+    }
+    else {
+      glg.disconnect();
+      gain.gain.cancelScheduledValues(ctx.currentTime);
+      gain.gain.value = 0.4;
+      var a = Math.random();
+      gain.gain.linearRampToValueAtTime( 0.5 ,ctx.currentTime + (a * 0.1 * (baseSec/1000)));
+      gain.gain.linearRampToValueAtTime(Math.random() * 0.004,ctx.currentTime + (a*100) + (Math.random() * (baseSec/1000) * 2));
+      gain.gain.linearRampToValueAtTime(0.0,ctx.currentTime + (Math.random() * a * (baseSec/1000)));
+    }
+
+    if ( challenge < Math.random() ) {
+      osc.frequency.value = oscBase * (parseInt( Math.random() * Math.random() * 7 + 1) / Math.pow(2,parseInt(Math.random() *3)));
+    }
+    if ( challenge < Math.random() ) {
+      lfo.type = (['square','sawtooth','triangle','sine'])[parseInt(Math.random() * 4)];
+    }
+    if ( challenge2 < Math.random() ) {
+      gainLfo.type = (['square','sawtooth','square','square'])[parseInt(Math.random() * 4)];
+    }
+    if ( challenge3 < Math.random() ) {
+      osc.type = (['square','sawtooth','triangle','sine'])[parseInt(Math.random() * 4)];
+    }
+
+    count++;
+    total++;
+
+    setTimeout(fun3,baseSec);
+  };
+  fun3();
+
+
+
+});
+</script>
+      </div>
+    </div>
+    <footer class="credit">
+      <p>written by aklaswad <a href="https://github.com/aklaswad">github</a> <a href="https://twitter.com/aklaswad">twitter</a></p>
+    </footer>
+
+  </section>
+<a href="https://github.com/aklaswad/alligata" style="z-index:9999"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+</body>
+
+

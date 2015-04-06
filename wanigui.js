@@ -64,6 +64,9 @@
     looks.push('module-basic');
     for (j = 0, len = looks.length; j < len; j++) {
       look = looks[j];
+      if (look === 'none') {
+        return;
+      }
       guiModule = Wanigui.modules[look];
       if (guiModule) {
         this.moduleBuilder = new guiModule.create(module, this.opts);
@@ -78,6 +81,9 @@
     looks.push('keyboard');
     for (j = 0, len = looks.length; j < len; j++) {
       look = looks[j];
+      if (look === 'none') {
+        return;
+      }
       guiModule = Wanigui.modules[look];
       if (guiModule) {
         this.instrument = new guiModule.create(module, this.opts);
@@ -92,6 +98,9 @@
     looks.push('knob');
     for (j = 0, len = looks.length; j < len; j++) {
       look = looks[j];
+      if (look === 'none') {
+        return;
+      }
       guiModule = Wanigui.modules[look];
       if (guiModule) {
         this.audioParams[name] = new guiModule.create(module, name, param, opts);

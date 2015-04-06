@@ -7,7 +7,7 @@ var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 
 gulp.task('ghPages', function () {
-  return gulp.src('./site/**/*')
+  return gulp.src(['./site/**/*','./wanigui.all.min.js'])
     .pipe(ghPages());
 });
 
